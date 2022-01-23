@@ -13,7 +13,7 @@ kubectl config use-context fermo
 SERVERURL=$(kubectl get svc $SERVICE_NAME -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
 DNS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}')
 
-docker run -d \
+docker run \
     --name wireguard \
     --cap-add=NET_ADMIN \
     --cap-add=SYS_MODULE \
@@ -29,5 +29,4 @@ docker run -d \
     -v "$(pwd)"/config:/config \
     -v /lib/modules:/lib/modules \
     --sysctl="net.ipv4.conf.all.src_valid_mark=1" \
-    --restart=unless-stopped \
     linuxserver/wireguard
