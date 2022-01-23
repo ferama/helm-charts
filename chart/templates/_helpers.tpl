@@ -50,13 +50,3 @@ app.kubernetes.io/name: {{ include "k8svpn.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
-{{/*
-Create the name of the service account to use
-*/}}
-{{- define "k8svpn.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "k8svpn.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}

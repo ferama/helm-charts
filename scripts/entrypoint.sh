@@ -7,7 +7,7 @@ kubectl config set-credentials user --token=$(cat /var/run/secrets/kubernetes.io
 kubectl config set-context fermo --user=user
 kubectl config use-context fermo
 
-SERVERURL=$(kubectl get svc proxy -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
+SERVERURL=$(kubectl get svc $SERVICE_NAME -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
 DNS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}')
 
 docker run -d \

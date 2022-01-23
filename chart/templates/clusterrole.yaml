@@ -1,0 +1,26 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "k8svpn.fullname" . }}-role
+  labels:
+    {{- include "k8svpn.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs: 
+  - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "k8svpn.fullname" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "k8svpn.fullname" . }}-service-account
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "k8svpn.fullname" . }}-role
+  apiGroup: rbac.authorization.k8s.io

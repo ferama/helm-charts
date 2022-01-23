@@ -7,9 +7,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
+    # wireguard
+    - protocol: UDP
+      name: wireguard
+      port: {{ .Values.service.port }}
+      targetPort: 51820
   selector:
     {{- include "k8svpn.selectorLabels" . | nindent 4 }}
