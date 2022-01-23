@@ -3,6 +3,16 @@ entries:
   k8svpn:
   - apiVersion: v2
     appVersion: latest
+    created: "2022-01-23T21:17:20.837057957Z"
+    description: A wireguard based vpn service for kubernetes
+    digest: 933700ba408bf52fc646c85ac061645a2cb3bdf2aebbe368ace6baea71192b6e
+    name: k8svpn
+    type: application
+    urls:
+    - https://github.com/ferama/k8svpn/releases/download/k8svpn-0.1.3/k8svpn-0.1.3.tgz
+    version: 0.1.3
+  - apiVersion: v2
+    appVersion: latest
     created: "2022-01-23T18:45:59.523336468Z"
     description: A wireguard based vpn service for kubernetes
     digest: 0ba210faa5d2912899875ed608046bfcfa9cfe19843b163f04e730dcc9e190eb
