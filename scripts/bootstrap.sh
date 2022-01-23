@@ -1,16 +1,12 @@
 #! /bin/bash
 set -x
 
-USERNAME=fermo
-PASSWORD=fermo
-
 export DEBIAN_FRONTEND=noninteractive
 
 setup_packages() {
     apt update
     apt install -y \
         vim \
-        byobu \
         psmisc \
         iputils-ping \
         netcat \
