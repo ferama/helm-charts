@@ -1,6 +1,6 @@
 apiVersion: v2
 name: k8svpn
-description: A Helm chart for Kubernetes
+description: A wireguard based vpn service for kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
