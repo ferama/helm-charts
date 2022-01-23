@@ -1,5 +1,8 @@
 #! /bin/sh
 
+# start dockcer service
+service docker start
+
 # setup kubectl
 kubectl config set-cluster fermo --server=https://kubernetes.default --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 kubectl config set-context fermo --cluster=fermo
