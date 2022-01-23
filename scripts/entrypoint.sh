@@ -18,7 +18,7 @@ docker run -d \
     -e PGID=1000 \
     -e TZ="Europe/Rome" \
     -e SERVERURL=${SERVERURL} \
-    -e PEERS="laptop,phone" \
+    -e PEERS="user1,user2" \
     -e PEERDNS=${DNS} \
     -e ALLOWEDIPS="172.21.0.0/16" \
     -e INTERNAL_SUBNET="10.13.16.0" \

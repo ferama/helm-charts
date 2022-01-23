@@ -1,8 +1,5 @@
 FROM ubuntu:latest
 
-# image extra binaries and utils
-COPY bin/* /usr/local/bin/
-
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
