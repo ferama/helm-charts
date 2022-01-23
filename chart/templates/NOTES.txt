@@ -1,6 +1,6 @@
-Wait a few seconds until the pod is ready
+Wait a few seconds until the pod becomes ready
 
-1. Get your local client conf using:
+1. Get your local wireguard client conf using:
 
    $ kubectl exec -it deployment/{{ include "k8svpn.fullname" . }} -- cat /config/peer_user/peer_user.conf
 

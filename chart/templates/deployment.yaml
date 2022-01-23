@@ -33,6 +33,13 @@ spec:
               value: {{ include "k8svpn.fullname" . }}
           securityContext:
             privileged: true
+          readinessProbe:
+            exec:
+              command:
+              - cat
+              - /config/peer_user/peer_user.conf
+            initialDelaySeconds: 5
+            periodSeconds: 5
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
