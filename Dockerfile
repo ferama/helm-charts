@@ -19,6 +19,4 @@ RUN /bootstrap.sh && rm /bootstrap.sh
 
 COPY ./scripts/entrypoint.sh /
 
-USER fermo
-
 ENTRYPOINT ["/entrypoint.sh"]
