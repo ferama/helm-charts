@@ -6,11 +6,11 @@ metadata:
     {{- include "k8svpn.labels" . | nindent 4 }}
 rules:
 - apiGroups:
-  - '*'
+  - ''
   resources:
-  - '*'
+  - 'services'
   verbs: 
-  - '*'
+  - 'get'
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
