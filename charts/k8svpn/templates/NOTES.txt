@@ -2,7 +2,7 @@ Wait a few seconds until the pod becomes ready
 
 1. Get your local wireguard client conf using:
 
-   $ kubectl exec -it deployment/{{ include "k8svpn.fullname" . }} -- cat /config/peer_user/peer_user.conf
+   $ kubectl exec -it deployment/{{ include "k8svpn.fullname" . }} -- cat /config/peer1/peer1.conf
 
 2. Set and connect your local wireguard client
 3. Reach your cluster services using service-name.namespace.svc.cluster.local

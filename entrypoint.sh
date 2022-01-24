@@ -19,9 +19,8 @@ docker run \
     --cap-add=SYS_MODULE \
     -e PUID=1000 \
     -e PGID=1000 \
-    -e TZ="Europe/Rome" \
     -e SERVERURL=${SERVERURL} \
-    -e PEERS="user" \
+    -e PEERS="1" \
     -e PEERDNS=${DNS} \
     -e ALLOWEDIPS="172.21.0.0/16" \
     -e INTERNAL_SUBNET="10.13.16.0" \

@@ -4,8 +4,7 @@ RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		ca-certificates \
-		curl \
-		openssl; \
+		curl; \
     rm -r /var/lib/apt/lists /var/cache/apt/archives
 
 # install docker
