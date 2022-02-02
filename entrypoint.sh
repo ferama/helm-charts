@@ -14,9 +14,10 @@ SERVERURL=$(kubectl get svc $SERVICE_NAME -o=jsonpath="{.status.loadBalancer.ing
 DNS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}')
 
 INTERNAL_SUBNET="${INTERNAL_SUBNET:-10.13.16.0}"
-
+echo "Internal subnet: $INTERNAL_SUBNET"
 # vpn routed ips / net
 ALLOWEDIPS="${ALLOWEDIPS:-172.21.0.0/16}"
+echo "Allowed Ips: $ALLOWEDIPS"
 
 docker run \
     --name wireguard \
