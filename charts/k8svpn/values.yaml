@@ -10,6 +10,10 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+
+internalSubnet: "10.13.16.0"
+allowedips: "172.21.0.0/16"
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
