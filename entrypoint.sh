@@ -1,4 +1,5 @@
 #! /bin/sh
+set -x
 
 # start dockcer service
 service docker start
