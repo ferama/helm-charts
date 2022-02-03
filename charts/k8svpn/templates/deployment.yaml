@@ -33,6 +33,8 @@ spec:
               value: {{ .Values.internalSubnet }}
             - name: ALLOWEDIPS
               value: {{ .Values.allowedips }}
+            - name: SERVERURL
+              value: {{ .Values.serverUrl }}
           securityContext:
             privileged: true
           readinessProbe:

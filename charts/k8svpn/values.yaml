@@ -13,6 +13,7 @@ image:
 
 internalSubnet: "10.13.16.0"
 allowedips: "172.21.0.0/16"
+serverUrl: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -22,6 +23,14 @@ podAnnotations: {}
 service:
   type: LoadBalancer
   port: 51820
+  nodePort: ""
+
+# serverUrl: 192.168.10.15:31820
+# allowedips: "10.152.183.0/24"
+# service:
+#   type: NodePort
+#   port: 51820
+#   nodePort: 31820
 
 resources: {}
 nodeSelector: {}

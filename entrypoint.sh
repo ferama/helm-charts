@@ -10,7 +10,10 @@ kubectl config set-credentials user --token=$(cat /var/run/secrets/kubernetes.io
 kubectl config set-context fermo --user=user
 kubectl config use-context fermo
 
-SERVERURL=$(kubectl get svc $SERVICE_NAME -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
+# try to infer SERVERURL if not defined
+if [ -z $SERVERURL ]; then
+    SERVERURL=$(kubectl get svc $SERVICE_NAME -o=jsonpath="{.status.loadBalancer.ingress[0].ip}")
+fi
 DNS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}')
 
 INTERNAL_SUBNET="${INTERNAL_SUBNET:-10.13.16.0}"
