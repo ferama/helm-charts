@@ -38,7 +38,7 @@ docker run \
     -e PEERDNS=${DNS} \
     -e ALLOWEDIPS=$ALLOWEDIPS \
     -e INTERNAL_SUBNET=$INTERNAL_SUBNET \
-    -p ${SERVERPORT}:${SERVERPORT}/udp \
+    -p 51820:51820/udp \
     -v /config:/config \
     -v /lib/modules:/lib/modules \
     --sysctl="net.ipv4.conf.all.src_valid_mark=1" \
