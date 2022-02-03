@@ -35,6 +35,8 @@ spec:
               value: {{ .Values.allowedips }}
             - name: SERVERURL
               value: {{ .Values.serverUrl }}
+            - name: SERVERPORT
+              value: {{ .Values.service.port | quote }}
           securityContext:
             privileged: true
           readinessProbe:
