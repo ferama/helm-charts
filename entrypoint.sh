@@ -16,6 +16,9 @@ if [ -z $SERVERURL ]; then
 fi
 DNS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}')
 
+
+SERVERPORT="${SERVERPORT:-51820}"
+echo "Server port: $SERVERPORT"
 INTERNAL_SUBNET="${INTERNAL_SUBNET:-10.13.16.0}"
 echo "Internal subnet: $INTERNAL_SUBNET"
 # vpn routed ips / net
@@ -29,11 +32,12 @@ docker run \
     -e PUID=1000 \
     -e PGID=1000 \
     -e SERVERURL=${SERVERURL} \
+    -e SERVERPORT=${SERVERPORT} \
     -e PEERS="1" \
     -e PEERDNS=${DNS} \
     -e ALLOWEDIPS=$ALLOWEDIPS \
     -e INTERNAL_SUBNET=$INTERNAL_SUBNET \
-    -p 51820:51820/udp \
+    -p ${SERVERPORT}:${SERVERPORT}/udp \
     -v /config:/config \
     -v /lib/modules:/lib/modules \
     --sysctl="net.ipv4.conf.all.src_valid_mark=1" \
