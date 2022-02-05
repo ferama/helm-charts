@@ -1,3 +1,8 @@
+#  docker run --rm -it --name wg \
+# 	--cap-add sys_module \
+# 	--cap-add net_admin \
+# 	-p 51820:51820/udp wg
+
 FROM ubuntu:latest
 
 RUN set -eux; \
@@ -7,6 +12,7 @@ RUN set -eux; \
 		wireguard-tools \
 		inotify-tools \
 		iptables \
+		iproute2 \
 		net-tools \
 		curl; \
     rm -r /var/lib/apt/lists /var/cache/apt/archives
@@ -17,9 +23,7 @@ RUN \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; \
     chmod +x kubectl && mv kubectl /usr/local/bin 
 
-VOLUME /etc/wireguard
+VOLUME /config
 
-ADD scripts/* /usr/local/bin/
-
-# COPY ./entrypoint.sh /
-# ENTRYPOINT ["/entrypoint.sh"]
+COPY ./entrypoint.sh /
+ENTRYPOINT ["/entrypoint.sh"]

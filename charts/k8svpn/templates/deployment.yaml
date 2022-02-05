@@ -31,19 +31,23 @@ spec:
               value: {{ include "k8svpn.fullname" . }}
             - name: INTERNAL_SUBNET
               value: {{ .Values.internalSubnet }}
-            - name: ALLOWEDIPS
+            - name: ALLOWED_IPS
               value: {{ .Values.allowedips }}
-            - name: SERVERURL
+            - name: SERVER_URL
               value: {{ .Values.serverUrl }}
-            - name: SERVERPORT
+            - name: SERVER_PORT
               value: {{ .Values.service.port | quote }}
           securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+                - SYS_MODULE
             privileged: true
           readinessProbe:
             exec:
               command:
               - cat
-              - /config/peer1/peer1.conf
+              - /config/peers/1.conf
             initialDelaySeconds: 5
             periodSeconds: 5
           imagePullPolicy: {{ .Values.image.pullPolicy }}
