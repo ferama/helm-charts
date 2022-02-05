@@ -36,10 +36,6 @@ init_config() {
         server_key=`cat /config/wg0.key`
         server_address=$(nextip $INTERNAL_SUBNET)
 
-         # create clients dir if not exists
-        [ -d /config/peers ] || mkdir -p /config/peers
-        nextpeerip=$(nextip $server_address)
-
         wg genkey | tee /config/server.key | wg pubkey > /config/server.pub
         server_pub=`cat /config/server.pub`
 
@@ -50,13 +46,10 @@ ListenPort = 51820
 PrivateKey = $server_key
 PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-[Peer]
-PublicKey = $server_pub
-AllowedIPs = $nextpeerip/32
 EOF
-        chmod go-rw /config/wg0.key /config/wg0.conf
-
-        nextpeerip=$(nextip $nextpeerip)
+        # create clients dir if not exists
+        [ -d /config/peers ] || mkdir -p /config/peers
+        nextpeerip=$(nextip $server_address)
         echo $nextpeerip > /config/nextpeerip
     fi
 
@@ -77,9 +70,6 @@ wg_up() {
 		ip=`awk '/Address/{print $3}' $conf|awk -F\/ '{print $1}'`
 		wg set wg0 peer $pub allowed-ips $ip
 	done
-
-    echo "$(date): setup NAT"
-    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 }
 
 # put down the vpn interface
@@ -108,7 +98,7 @@ add_peer() {
 	cat > /config/peers/$name.conf << EOF
 [Interface]
 PrivateKey = $client_key
-Address = $peer_ip/24
+Address = $peer_ip/32
 DNS = $DNS
 
 [Peer]
@@ -116,14 +106,12 @@ PublicKey = $server_pub
 AllowedIPs = $ALLOWED_IPS
 Endpoint = $SERVER_URL:$SERVER_PORT
 EOF
-	chmod go-rw /config/peers/$name.key /config/peers/$name.conf
 }
 
 # Handle shutdown behavior
 finish () {
     echo "$(date): stopping wireguard"
     wg_down
-    iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
     exit 0
 }
 
