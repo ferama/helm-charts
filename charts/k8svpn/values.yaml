@@ -22,7 +22,7 @@ fullnameOverride: ""
 podAnnotations: {}
 service:
   type: LoadBalancer
-  port: 51820
+  port: 31820
 
 # serverUrl: 192.168.10.15:31820
 # allowedips: "10.152.183.0/24"

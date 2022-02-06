@@ -33,9 +33,9 @@ spec:
               value: {{ .Values.internalSubnet }}
             - name: ALLOWED_IPS
               value: {{ .Values.allowedips }}
-            - name: SERVER_URL
+            - name: SERVER_PUBLIC_URL
               value: {{ .Values.serverUrl }}
-            - name: SERVER_PORT
+            - name: SERVER_PUBLIC_PORT
               value: {{ .Values.service.port | quote }}
           securityContext:
             capabilities:

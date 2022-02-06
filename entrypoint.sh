@@ -3,9 +3,10 @@
 guess_public_ip() {
     if [ -e /var/run/secrets/kubernetes.io/serviceaccount/token ]
     then
-        # if [ -z $SERVICE_NAME ]; then
-        #     echo "$(date): running in k8s but no SERVIVCE_NAME env set"
-        # fi
+        if [ -z $SERVICE_NAME ]; then
+            echo "$(date): running in k8s but no SERVIVCE_NAME env set"
+            exit 1
+        fi
         kubectl config set-cluster vpn --server=https://kubernetes.default --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         kubectl config set-context vpn --cluster=vpn
         kubectl config set-credentials user --token=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
@@ -104,7 +105,7 @@ DNS = $DNS
 [Peer]
 PublicKey = $server_pub
 AllowedIPs = $ALLOWED_IPS
-Endpoint = $SERVER_URL:$SERVER_PORT
+Endpoint = $SERVER_PUBLIC_URL:$SERVER_PUBLIC_PORT
 EOF
 }
 
@@ -118,19 +119,19 @@ finish () {
 
 #### MAIN ####
 
-SERVER_PORT="${SERVER_PORT:-51820}"
+SERVER_PUBLIC_PORT="${SERVER_PUBLIC_PORT:-51820}"
 INTERNAL_SUBNET="${INTERNAL_SUBNET:-10.13.16.0}"
 ALLOWED_IPS="${ALLOWED_IPS:-0.0.0.0/0}" # vpn routed ips / net
 PEERS_COUNT=${PEERS_COUNT:-1}
 
-SERVER_URL="${SERVER_URL-$(guess_public_ip)}"
+SERVER_PUBLIC_URL="${SERVER_PUBLIC_URL-$(guess_public_ip)}"
 DNS=$(cat /etc/resolv.conf  | grep nameserver | awk '{print $2}')
 
 echo "==========================================="
-printf "%-20s %s\n" "Server port" "$SERVER_PORT"
+printf "%-20s %s\n" "Server port" "$SERVER_PUBLIC_PORT"
 printf "%-20s %s\n" "Internal subnet" "$INTERNAL_SUBNET"
 printf "%-20s %s\n" "Allowed Ips" "$ALLOWED_IPS"
-printf "%-20s %s\n" "Server Url" "$SERVER_URL"
+printf "%-20s %s\n" "Server Url" "$SERVER_PUBLIC_URL"
 printf "%-20s %s\n" "DNS" "$DNS"
 echo "==========================================="
 
