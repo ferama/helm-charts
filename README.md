@@ -26,6 +26,5 @@ To uninstall the chart:
 helm install vpn k8svpn/k8svpn \
     --set serverUrl=192.168.10.15 \
     --set service.type=NodePort \
-    --set service.port=31820 \
     --set allowedips=10.152.183.0/24
 ```
