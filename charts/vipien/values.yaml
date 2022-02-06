@@ -5,8 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: ferama/k8svpn
-  pullPolicy: Always
+  repository: ferama/vipien
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 

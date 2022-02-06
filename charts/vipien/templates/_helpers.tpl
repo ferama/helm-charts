@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "k8svpn.name" -}}
+{{- define "vipien.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "k8svpn.fullname" -}}
+{{- define "vipien.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "k8svpn.chart" -}}
+{{- define "vipien.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "k8svpn.labels" -}}
-helm.sh/chart: {{ include "k8svpn.chart" . }}
-{{ include "k8svpn.selectorLabels" . }}
+{{- define "vipien.labels" -}}
+helm.sh/chart: {{ include "vipien.chart" . }}
+{{ include "vipien.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,8 +45,8 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "k8svpn.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "k8svpn.name" . }}
+{{- define "vipien.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "vipien.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
