@@ -53,6 +53,11 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          {{- if .Values.dataVolume.enabled }}
+            - name: {{ include "vipien.fullname" . }}-pvc
+              mountPath: /config
+          {{- end }}  
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -64,4 +69,10 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- if .Values.dataVolume.enabled }}
+        - name: {{ include "vipien.fullname" . }}-pvc
+          persistentVolumeClaim:
+            claimName: {{ include "vipien.fullname" . }}-pvc
       {{- end }}

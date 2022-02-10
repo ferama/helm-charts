@@ -1,0 +1,17 @@
+{{- if .Values.dataVolume.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "vipien.fullname" . }}-pvc
+  labels:
+    {{- include "vipien.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.dataVolume.storageClass }}
+  storageClassName: {{ .Values.dataVolume.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.dataVolume.size }}
+{{- end }}
