@@ -37,6 +37,8 @@ spec:
               value: {{ .Values.serverUrl }}
             - name: SERVER_PUBLIC_PORT
               value: {{ .Values.service.port | quote }}
+            - name: ENABLE_UI
+              value: {{ .Values.enableUI | quote }}
           securityContext:
             capabilities:
               add:

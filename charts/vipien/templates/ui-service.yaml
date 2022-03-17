@@ -1,0 +1,17 @@
+{{ if .Values.enableUI }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vipien.fullname" . }}
+  labels:
+    {{- include "vipien.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - protocol: TCP
+      name: ui
+      port: 8080
+      targetPort: 8080
+  selector:
+    {{- include "vipien.selectorLabels" . | nindent 4 }}
+{{ end }}
