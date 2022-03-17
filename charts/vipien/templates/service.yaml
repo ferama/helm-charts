@@ -15,11 +15,5 @@ spec:
       {{ end }}
       port: {{ .Values.service.port }}
       targetPort: 51820
-    {{ if .Values.enableUI }}
-    - protocol: TCP
-      name: ui
-      port: 8080
-      targetPort: 8080
-    {{ end }}
   selector:
     {{- include "vipien.selectorLabels" . | nindent 4 }}
