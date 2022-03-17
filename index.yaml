@@ -3,14 +3,14 @@ entries:
   vipien:
   - apiVersion: v2
     appVersion: v0.5.1
-    created: "2022-03-17T13:48:37.381487053Z"
+    created: "2022-03-17T13:58:04.803825051Z"
     description: A wireguard based vpn service for kubernetes
-    digest: 9be7b41ce259610ecef1aec5a86a81b63c76dfc095c410092223fef8856b86d2
+    digest: c292b1a807c3a19737afde92e6261afcfcc76e32bca257bfc872ae3c24f07a22
     name: vipien
     type: application
     urls:
-    - https://github.com/ferama/helm-charts/releases/download/vipien-0.2.3/vipien-0.2.3.tgz
-    version: 0.2.3
+    - https://github.com/ferama/helm-charts/releases/download/vipien-0.2.4/vipien-0.2.4.tgz
+    version: 0.2.4
   - apiVersion: v2
     appVersion: v0.5.1
     created: "2022-03-17T13:13:10.948911576Z"
@@ -101,4 +101,4 @@ entries:
     urls:
     - https://github.com/ferama/helm-charts/releases/download/vipien-0.1.0/vipien-0.1.0.tgz
     version: 0.1.0
-generated: "2022-03-17T13:48:37.381537055Z"
+generated: "2022-03-17T13:58:04.803873752Z"
