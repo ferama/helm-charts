@@ -31,7 +31,14 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.runAsRoot }}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - rospo /etc/rospo/rospo.yaml
+          {{- else }}
           args: ["/etc/rospo/rospo.yaml"]
+          {{- end}}
           ports:
             - name: ssh
               containerPort: 2222
