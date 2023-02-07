@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "rospo.fullname" . }}
+  labels:
+    {{- include "rospo.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "rospo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "rospo.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["/etc/rospo/rospo.yaml"]
+          ports:
+            - name: ssh
+              containerPort: 2222
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- range .Values.extraVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+            {{- end }}
+            - name: {{ include "rospo.fullname" . }}
+              mountPath: /etc/rospo/rospo.yaml
+              subPath: rospo.yaml
+            - name: {{ include "rospo.fullname" . }}-secret
+              mountPath: /etc/rospo/server_key
+              subPath: server_key
+            - name: {{ include "rospo.fullname" . }}-secret-auth
+              mountPath: /etc/rospo/authorized_keys
+              subPath: authorized_keys
+           
+
+      volumes:
+        {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}
+        {{- end }}
+        - name: {{ include "rospo.fullname" . }}
+          configMap:
+            name: {{ include "rospo.fullname" . }}
+        - name: {{ include "rospo.fullname" . }}-secret
+          secret:
+            secretName: {{ include "rospo.fullname" . }}
+        - name: {{ include "rospo.fullname" . }}-secret-auth
+          secret:
+            secretName: {{ include "rospo.fullname" . }}-auth
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
