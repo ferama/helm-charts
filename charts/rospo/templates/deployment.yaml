@@ -36,6 +36,14 @@ spec:
           args:
             - -c
             - rospo /etc/rospo/rospo.yaml
+          {{- else if .Values.customUserId }}
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              usermod -u {{ .Values.customUserId }} rospo
+              cd /home/rospo
+              sudo -u rospo rospo /etc/rospo/rospo.yaml
           {{- else }}
           args: ["/etc/rospo/rospo.yaml"]
           {{- end}}
@@ -49,6 +57,7 @@ spec:
             {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
             {{- end }}
             - name: {{ include "rospo.fullname" . }}
               mountPath: /etc/rospo/rospo.yaml

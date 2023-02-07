@@ -16,29 +16,20 @@ fullnameOverride: ""
 
 # if true run the sshd as the root user
 runAsRoot: false
+customUserId: ""
 
-conf: |
-  sshd:
-    # this is the server_key mount point. Do not change
-    server_key: "/etc/rospo/server_key"
-
-    authorized_keys:
-      # do not remove this one
-      - /etc/rospo/authorized_keys
-      # HERE you can add more keys source
-      - https://github.com/ferama.keys
-  
-    
-    authorized_password: 76.Hj12/12h
-
-    # do not change me
-    listen_address: ":2222"
 
 # authorizedKeys: |
 #   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDWXGI68rLy0YKyF2T611JifTrW+VogS+i/a5rItOJT8/yeAoWZMCRfR9CHYExV4IBmeXucymzYeHQCQZmeuUprsN8fL+muIdC0wrjXRtlBPUUEbzGV528+A44ZA7rypx5WvKpkLSHzhXHnK16rIU1QDCJMc6sSm5VIyRDw8t3k8mDfiyuAHSjG+7j0mKm3gbdJUB192U3nFX9bDzfOqXN7SmMqjezr0hASW8XYx7jI13eM7bkYT6GG3s7noWAltTyzaeyMjoLPWG4c7/x1INgNjrC+rmQwn995+B2BkwCDgULpwsyQBTyoFV0pkvR3ZaRIpqjZd/ZDYBMUlBOAitZwJ6eGbFiWlqS//cVF7s5b8VBNxePP8oxcE3qP3+cIWyHiT7tavupnI5QvD9HzPity4K39eAnmrkhmhfBiNQo63QS1n+2oJqF+7wOeS5YWivPATXW2h9XQ8QeAFY+kJRMog7YJ0N5FsoqVHTcd3Fm9UQcoCso6ocvDGroHUnkhjZsMiokL6Shw+oFYJ4Dpa2ZTfIWRdM7TLE0nnqKmk11vJwId3DgI3yNQ6vV5fB53l511S0+F3ZR2vsJse5WPFEUNL7lGOtz2aDzZN1Bz8Gi/mtvr0fyl7AZeq5w4JiSItGhYX3SlAyekn5YfnXvVlVyUDDWX4wFkXs9NEjZPT+Hz2w==
 #   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDMcbRTjOXbMVdAaDevBlY7Fd0HU2kUbdx/pkk5aEpo+L0u7dMu3TXgLKtBrOwKttgu/C9HpolGBI8//kcKmatbMp5GksrIHaRJVMoRJlg+DNV2Y1Zem3edRDnAZKmwUWkYBjNoE9teGq/mDahXzlTm6fJp5868ZOH42aolJNM9FHdj5IiIFcuggS+tyFToGcWfTL7BKG0pryNIkaHzZx/ZVwvgbXDPrV0Zi03Y13928w0+tNryirMHpXudMich1RnkGDvsLIgSDPLk1cOKJkq1PK5k8Vt4GL1XRhqHolx/zDWNohEzT41tdwGWa6FrEi3n5cau7RSKFgE4/Zo283bl7yuZ2J1up/fV+L4EkIfJ39631+u8bNxenHPWIdi7B1vpHGw1FsoaYncyrVEK+Fw4VQKUcF1WOB9ZMDfMnuUykR4C8EmrPUFyq1UWEgnAW7kqqa5LB137nYCGA3k7hdQkn6kYTk2vPzaQWG+uO1LudnOiNSKEoYZXta17w+Rud+qDYuBcwbT8e5qnMneCDKcpe8Jmw+SKCeDYPumynL+KVlKL1cLOfzbb1dnF6/x0qqb++BxnJyoHmSY2ACNXP6VMStpbJX15dHPtKRzqw6lRiut9wW7L0Fnt42c3aadaozEam4NHHG+mYZ3TUBaxcRO8D/mC0kJAs18KbBL1IheWKw==
 
 authorizedKeys: ""
+
+# authorizedKeysURLS: 
+#   - https://github.com/ferama.keys
+authorizedKeysURLS: []
+
+authorizedPassword: ""
 
 serverKey: |
   -----BEGIN RSA PRIVATE KEY-----
