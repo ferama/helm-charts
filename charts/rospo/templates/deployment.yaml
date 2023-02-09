@@ -58,6 +58,7 @@ spec:
               mount sysfs /data/sys -t sysfs
               mount -o bind /dev /data/dev/
               mount -t devpts pts /data/dev/pts/
+              mount -o bind /dev/shm /data/dev/shm
 
               {{- range .Values.extraVolumeMounts }}
                 mkdir -p /data/{{ .mountPath }}
