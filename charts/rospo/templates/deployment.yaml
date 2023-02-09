@@ -31,11 +31,53 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.runAsRoot }}
+          {{- if .Values.chroot.enabled }}
           command: ["/bin/sh"]
           args:
             - -c
-            - rospo /etc/rospo/rospo.yaml
+            - |
+              set -e
+              if [ ! -f /data/chroot-ready ]; then
+                apt update
+                apt install -y schroot debootstrap
+                debootstrap jammy /data http://archive.ubuntu.com/ubuntu/
+ 
+                cp /usr/local/bin/rospo /data/usr/local/bin/rospo
+                mkdir /data/etc/rospo
+
+                chroot /data sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashrc
+                chroot /data adduser --gecos "" --disabled-password rospo
+                echo "rospo ALL=(ALL) NOPASSWD: ALL" >> /data/etc/sudoers
+                chroot /data addgroup rospo sudo
+              fi
+
+              cp -r /etc/rospo/* /data/etc/rospo
+              cp /etc/hosts /data/etc/hosts
+
+              mount proc /data/proc -t proc
+              mount sysfs /data/sys -t sysfs
+              mount -o bind /dev /data/dev/
+              mount -t devpts pts /data/dev/pts/
+
+              {{- range .Values.extraVolumeMounts }}
+                mkdir -p /data/{{ .mountPath }}
+                mount -o bind {{ .mountPath }} /data/{{ .mountPath }}
+              {{- end }}
+
+              touch /data/chroot-ready
+
+              # rospo /etc/rospo/rospo.yaml
+
+              chroot /data /bin/bash <<"EOT"
+                chmod 666 /dev/ptmx
+                {{ if .Values.customUserId }}
+                usermod -u {{ .Values.customUserId }} rospo
+                {{ else }}
+                usermod -u 1000 rospo
+                {{ end }}
+                runuser -l rospo -c 'rospo /etc/rospo/rospo.yaml'
+              EOT
+
           {{- else if .Values.customUserId }}
           command: ["/bin/sh"]
           args:
@@ -54,6 +96,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
+            {{- if .Values.chroot.enabled }}
+            - mountPath: /data
+              name: {{ include "rospo.fullname" . }}-chroot
+            {{- end }}
             {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
@@ -68,9 +114,13 @@ spec:
             - name: {{ include "rospo.fullname" . }}-secret-auth
               mountPath: /etc/rospo/authorized_keys
               subPath: authorized_keys
-           
 
       volumes:
+        {{- if .Values.chroot.enabled }}
+        - name: {{ include "rospo.fullname" . }}-chroot
+          persistentVolumeClaim:
+            claimName: {{ include "rospo.fullname" . }}-chroot
+        {{- end }}
         {{- range .Values.extraVolumeMounts }}
         - name: {{ .name }}
           persistentVolumeClaim:

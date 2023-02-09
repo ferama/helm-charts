@@ -14,10 +14,21 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
-# if true run the sshd as the root user
-runAsRoot: false
 customUserId: ""
 
+# if enabled, a volume will be mounted and the system will be persisted
+# A debootstrap system will be built into the volume and rospo will start inside the chroot
+# You may need to add some security policies like the following:
+#
+# securityContext:
+#   privileged: true
+#   capabilities:
+#     add: ["CAP_SYS_CHROOT"]
+#
+chroot:
+  enabled: false
+  # storageClassName: ibmc-block-gold
+  size: 10Gi
 
 # authorizedKeys: |
 #   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDWXGI68rLy0YKyF2T611JifTrW+VogS+i/a5rItOJT8/yeAoWZMCRfR9CHYExV4IBmeXucymzYeHQCQZmeuUprsN8fL+muIdC0wrjXRtlBPUUEbzGV528+A44ZA7rypx5WvKpkLSHzhXHnK16rIU1QDCJMc6sSm5VIyRDw8t3k8mDfiyuAHSjG+7j0mKm3gbdJUB192U3nFX9bDzfOqXN7SmMqjezr0hASW8XYx7jI13eM7bkYT6GG3s7noWAltTyzaeyMjoLPWG4c7/x1INgNjrC+rmQwn995+B2BkwCDgULpwsyQBTyoFV0pkvR3ZaRIpqjZd/ZDYBMUlBOAitZwJ6eGbFiWlqS//cVF7s5b8VBNxePP8oxcE3qP3+cIWyHiT7tavupnI5QvD9HzPity4K39eAnmrkhmhfBiNQo63QS1n+2oJqF+7wOeS5YWivPATXW2h9XQ8QeAFY+kJRMog7YJ0N5FsoqVHTcd3Fm9UQcoCso6ocvDGroHUnkhjZsMiokL6Shw+oFYJ4Dpa2ZTfIWRdM7TLE0nnqKmk11vJwId3DgI3yNQ6vV5fB53l511S0+F3ZR2vsJse5WPFEUNL7lGOtz2aDzZN1Bz8Gi/mtvr0fyl7AZeq5w4JiSItGhYX3SlAyekn5YfnXvVlVyUDDWX4wFkXs9NEjZPT+Hz2w==
@@ -31,6 +42,7 @@ authorizedKeysURLS: []
 
 authorizedPassword: ""
 
+# CHANGE ME before install
 serverKey: |
   -----BEGIN RSA PRIVATE KEY-----
   MIIJKQIBAAKCAgEAwanfB/ciMLDl+oIgt53cN/4+sXwPS33Fj8fGbhDxZirhFJiy
