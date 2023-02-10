@@ -23,6 +23,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ include "rospo.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -59,6 +60,11 @@ spec:
               mount -o bind /dev /data/dev/
               mount -t devpts pts /data/dev/pts/
               mount -o bind /dev/shm /data/dev/shm
+
+              {{- if .Values.serviceAccount.create }}
+              mkdir -p /data/run/secrets/kubernetes.io/serviceaccount
+              mount -o bind /run/secrets/kubernetes.io/serviceaccount /data/run/secrets/kubernetes.io/serviceaccount
+              {{- end }}
 
               {{- range .Values.extraVolumeMounts }}
                 mkdir -p /data/{{ .mountPath }}

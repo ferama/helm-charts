@@ -117,6 +117,18 @@ service:
   type: NodePort
   nodePort: 30222 # ignored if service type is not nodeport
 
+
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  # If enabled, a super privileged cluster role will be attached too
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
 resources: {}
 nodeSelector: {}
 tolerations: []
