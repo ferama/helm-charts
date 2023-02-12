@@ -19,6 +19,15 @@ serverKey: |
      -----END RSA PRIVATE KEY-----
 ```
 
+
+## usefull shortcuts
+Setup docker and kubectl
+```
+curl -fsSL https://get.docker.com | sh
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl && sudo mv kubectl /usr/local/bin
+```
+
 With a service account enabled, you can easily configure kubectl for cluster management:
 
 ```
