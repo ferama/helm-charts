@@ -1,24 +1,25 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "rospo.fullname" . }}
   labels:
     {{- include "rospo.labels" . | nindent 4 }}
 spec:
+  serviceName: {{ include "rospo.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       {{- include "rospo.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
       {{- with .Values.podAnnotations }}
+      annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "rospo.selectorLabels" . | nindent 8 }}
     spec:
+      terminationGracePeriodSeconds: 10
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -28,8 +29,15 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
+          {{- if and .Values.chroot.enabled ( not .Values.securityContext ) }}
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["CAP_SYS_CHROOT"]
+          {{- else }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.chroot.enabled }}
@@ -121,13 +129,7 @@ spec:
             - name: {{ include "rospo.fullname" . }}-secret-auth
               mountPath: /etc/rospo/authorized_keys
               subPath: authorized_keys
-
       volumes:
-        {{- if .Values.chroot.enabled }}
-        - name: {{ include "rospo.fullname" . }}-chroot
-          persistentVolumeClaim:
-            claimName: {{ include "rospo.fullname" . }}-chroot
-        {{- end }}
         {{- range .Values.extraVolumeMounts }}
         - name: {{ .name }}
           persistentVolumeClaim:
@@ -154,3 +156,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
+        {{- if .Values.chroot.enabled }}
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: {{ include "rospo.fullname" . }}-chroot
+      labels:
+        {{- include "rospo.labels" . | nindent 8 }}
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      {{- if .Values.chroot.storageClassName }}
+      storageClassName: {{ .Values.chroot.storageClassName }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.chroot.size }}
+  {{- end }}
