@@ -3,6 +3,16 @@ entries:
   rospo:
   - apiVersion: v2
     appVersion: v0.10.2
+    created: "2023-02-13T10:13:17.486924716Z"
+    description: A rospo based sshd service
+    digest: 52922bd01a23a7be9232a5105d7adc53cb08f4f0ae3562b29a8bc86dc67570aa
+    name: rospo
+    type: application
+    urls:
+    - https://github.com/ferama/helm-charts/releases/download/rospo-0.3.0/rospo-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: v0.10.2
     created: "2023-02-10T08:06:15.12825346Z"
     description: A rospo based sshd service
     digest: ceafe27d0dd061fb0f748be0556e425e16180d01f2e083e36ccf1a16fb02f674
@@ -192,4 +202,4 @@ entries:
     urls:
     - https://github.com/ferama/helm-charts/releases/download/vipien-0.1.0/vipien-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-10T08:06:15.128312262Z"
+generated: "2023-02-13T10:13:17.486999616Z"
