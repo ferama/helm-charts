@@ -157,7 +157,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
-        {{- if .Values.chroot.enabled }}
+  {{- if .Values.chroot.enabled }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim
