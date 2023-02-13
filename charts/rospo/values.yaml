@@ -18,13 +18,6 @@ customUserId: ""
 
 # if enabled, a volume will be mounted and the system will be persisted
 # A debootstrap system will be built into the volume and rospo will start inside the chroot
-# You may need to add some security policies like the following:
-#
-# securityContext:
-#   privileged: true
-#   capabilities:
-#     add: ["CAP_SYS_CHROOT"]
-#
 chroot:
   enabled: false
   # storageClassName: ibmc-block-gold

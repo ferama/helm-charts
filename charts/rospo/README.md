@@ -1,6 +1,6 @@
 # rospo
 
-sample custom conf
+## sample custom conf
 
 ```
 authorizedKeysURLS: 
@@ -28,8 +28,8 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 chmod +x kubectl && sudo mv kubectl /usr/local/bin
 ```
 
-With a service account enabled, you can easily configure kubectl for cluster management:
 
+With a service account enabled, you can easily configure kubectl for cluster management:
 ```
 kubectl config set-cluster rospo --server=https://kubernetes.default --certificate-authority=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
 kubectl config set-context rospo --cluster=rospo
