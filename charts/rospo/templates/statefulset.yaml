@@ -51,7 +51,6 @@ spec:
                 apt install -y schroot debootstrap
                 debootstrap jammy /data http://archive.ubuntu.com/ubuntu/
  
-                cp /usr/local/bin/rospo /data/usr/local/bin/rospo
                 mkdir /data/etc/rospo
 
                 chroot /data sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashrc
@@ -60,6 +59,7 @@ spec:
                 chroot /data addgroup rospo sudo
               fi
 
+              cp /usr/local/bin/rospo /data/usr/local/bin/rospo
               cp -r /etc/rospo/* /data/etc/rospo
               cp /etc/hosts /data/etc/hosts
 
@@ -90,7 +90,7 @@ spec:
                 {{ else }}
                 usermod -u 1000 rospo
                 {{ end }}
-                runuser -l rospo -c 'rospo /etc/rospo/rospo.yaml'
+                runuser -l rospo -c 'rospo run /etc/rospo/rospo.yaml'
               EOT
 
           {{- else if .Values.customUserId }}
@@ -100,9 +100,9 @@ spec:
             - |
               usermod -u {{ .Values.customUserId }} rospo
               cd /home/rospo
-              sudo -u rospo rospo /etc/rospo/rospo.yaml
+              sudo -u rospo rospo run /etc/rospo/rospo.yaml
           {{- else }}
-          args: ["/etc/rospo/rospo.yaml"]
+          args: ["run", "/etc/rospo/rospo.yaml"]
           {{- end}}
           ports:
             - name: ssh
