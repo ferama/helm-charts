@@ -35,6 +35,9 @@ authorizedKeysURLS: []
 
 authorizedPassword: ""
 
+# if true, the shell/exec sessions will be disabled
+disableShell: false
+
 # CHANGE ME before install
 serverKey: |
   -----BEGIN RSA PRIVATE KEY-----

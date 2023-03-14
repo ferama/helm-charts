@@ -19,5 +19,7 @@ data:
       authorized_password: {{ .Values.authorizedPassword  }}
       {{ end }}
 
+      disable_shell: {{ .Values.disableShell  }}
+
       # do not change me
       listen_address: ":2222"
