@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "crauti.fullname" . }}
+  labels:
+    {{- include "crauti.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 8080
+      protocol: TCP
+      name: http
+    - port: 8181
+      targetPort: admin
+      protocol: TCP
+      name: admin
+  selector:
+    {{- include "crauti.selectorLabels" . | nindent 4 }}
