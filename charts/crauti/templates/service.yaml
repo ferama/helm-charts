@@ -15,5 +15,6 @@ spec:
       targetPort: admin
       protocol: TCP
       name: admin
+  externalTrafficPolicy: Local
   selector:
     {{- include "crauti.selectorLabels" . | nindent 4 }}
