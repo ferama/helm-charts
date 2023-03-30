@@ -3,6 +3,16 @@ entries:
   crauti:
   - apiVersion: v2
     appVersion: main
+    created: "2023-03-30T06:57:46.242378191Z"
+    description: A Helm chart for Kubernetes
+    digest: a707d9c0c6ebb68a4ff1f5b4228f9cc334247372816b076fa8c1eb5fd27f696b
+    name: crauti
+    type: application
+    urls:
+    - https://github.com/ferama/helm-charts/releases/download/crauti-0.1.2/crauti-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: main
     created: "2023-03-29T20:37:14.57954128Z"
     description: A Helm chart for Kubernetes
     digest: 78caa4c632b42abf3cee1376c1aced0b2127508505a1dc835606fdbd6977b869
@@ -233,4 +243,4 @@ entries:
     urls:
     - https://github.com/ferama/helm-charts/releases/download/vipien-0.1.0/vipien-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-29T20:37:14.579607881Z"
+generated: "2023-03-30T06:57:46.242438592Z"
