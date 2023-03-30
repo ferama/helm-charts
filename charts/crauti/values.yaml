@@ -11,6 +11,11 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+
+# if enabled, the crauti admin ui will be exposed
+# at root path /
+exposeAdminUI: false
+
 conf: |
   kubernetes:
     autodiscover: true

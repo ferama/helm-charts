@@ -4,6 +4,15 @@ metadata:
   name: {{ include "crauti.fullname" . }}
   labels:
     {{- include "crauti.labels" . | nindent 4 }}
+  {{- if .Values.exposeAdminUI }}
+  annotations:
+    crauti/conf: |
+      enabled: true
+      upstreamHttpPort: 8181
+      mountPoints:
+        - source: /
+          path: /
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
