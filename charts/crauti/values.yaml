@@ -17,8 +17,10 @@ image:
 exposeAdminUI: false
 
 conf: |
-  kubernetes:
-    autodiscover: true
+  gateway:
+    autoHTTPSEnabled: true
+    kubernetes:
+      autodiscover: true
 
 imagePullSecrets: []
 nameOverride: ""

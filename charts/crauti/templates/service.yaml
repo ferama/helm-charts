@@ -6,7 +6,7 @@ metadata:
     {{- include "crauti.labels" . | nindent 4 }}
   {{- if .Values.exposeAdminUI }}
   annotations:
-    crauti/conf: |
+    ferama.github.io/crauti: |
       enabled: true
       upstreamHttpPort: 8181
       mountPoints:
@@ -17,9 +17,13 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: 8080
+      targetPort: 80
       protocol: TCP
       name: http
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
     - port: 8181
       targetPort: admin
       protocol: TCP
