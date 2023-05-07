@@ -3,6 +3,16 @@ entries:
   crauti:
   - apiVersion: v2
     appVersion: main
+    created: "2023-05-07T07:20:48.354793528Z"
+    description: A Helm chart for Kubernetes
+    digest: 7ed01955f09974072ca0fc7d71a5228d8b5b63f6cb15e27fcd37d84d6fb4dcad
+    name: crauti
+    type: application
+    urls:
+    - https://github.com/ferama/helm-charts/releases/download/crauti-0.1.4/crauti-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: main
     created: "2023-04-06T20:18:25.112705917Z"
     description: A Helm chart for Kubernetes
     digest: 398cd2319b895df3c5c1333906725ac70efb106fc7251a9049a386a05ef34d50
@@ -32,6 +42,16 @@ entries:
     - https://github.com/ferama/helm-charts/releases/download/crauti-0.1.0/crauti-0.1.0.tgz
     version: 0.1.0
   rospo:
+  - apiVersion: v2
+    appVersion: v0.11.1
+    created: "2023-05-07T07:20:48.467470119Z"
+    description: A rospo based sshd service
+    digest: 0babef1012cb962a75e5b6798ff68a88329e96f90fb0f3621dd6fdc9048b3b06
+    name: rospo
+    type: application
+    urls:
+    - https://github.com/ferama/helm-charts/releases/download/rospo-0.3.3/rospo-0.3.3.tgz
+    version: 0.3.3
   - apiVersion: v2
     appVersion: v0.10.4
     created: "2023-03-14T09:02:54.351271906Z"
@@ -253,4 +273,4 @@ entries:
     urls:
     - https://github.com/ferama/helm-charts/releases/download/vipien-0.1.0/vipien-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-06T20:18:25.112906417Z"
+generated: "2023-05-07T07:20:48.46755652Z"
