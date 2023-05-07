@@ -111,9 +111,16 @@ securityContext: {}
 
 service:
   type: NodePort
-  nodePort: 30222 # ignored if service type is not nodeport
+  nodePort: 30222 # ignored if service type is not NodePort
+  loadBalancerIP: "" # ignored if service type is not LoadBalancer
 
-
+# maps tcp ports into the service
+# Example:
+#   mapPortRange:
+#    start: 3000
+#    end: 4000
+# To not make the range too big to prevent the "Request entity too large: limit is 3145728" error
+mapPortRange: {}
 
 serviceAccount:
   # Specifies whether a service account should be created

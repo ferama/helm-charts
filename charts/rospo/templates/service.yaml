@@ -6,11 +6,23 @@ metadata:
     {{- include "rospo.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
+  {{ if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{ end }}
   ports:
-    - port: 2222
+    {{- if .Values.mapPortRange }}
+      {{- $iter := untilStep (int .Values.mapPortRange.start) (int .Values.mapPortRange.end) 1 -}}
+      {{- range $index, $port := $iter }}
+    - name: port-{{ $index }}
+      port: {{ $port }}
+      targetPort: {{ $port }}
+      protocol: TCP
+      {{- end }}
+    {{- end }}
+    - name: ssh
+      port: 2222
       targetPort: ssh
       protocol: TCP
-      name: ssh
       {{ if eq .Values.service.type "NodePort" }}
       nodePort: {{ .Values.service.nodePort }}
       {{ end }}

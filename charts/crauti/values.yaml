@@ -18,7 +18,7 @@ exposeAdminUI: false
 
 conf: |
   gateway:
-    autoHTTPSEnabled: true
+    autoHTTPSEnabled: false
     kubernetes:
       autodiscover: true
 
