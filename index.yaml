@@ -44,6 +44,16 @@ entries:
   kali:
   - apiVersion: v2
     appVersion: latest
+    created: "2023-05-10T10:46:39.28764291Z"
+    description: A kali based sshd service
+    digest: 012903dd4de6f0ec9db12d35c09f255c543acd7395d00132ddfe8c89ebcbb225
+    name: kali
+    type: application
+    urls:
+    - https://github.com/ferama/helm-charts/releases/download/kali-0.1.1/kali-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: latest
     created: "2023-05-10T10:33:16.926763073Z"
     description: A kali based sshd service
     digest: 795bc90fc86ef28181b10480bb59ce83af672c3bcaa39fb90ab942d9c26acd9b
@@ -284,4 +294,4 @@ entries:
     urls:
     - https://github.com/ferama/helm-charts/releases/download/vipien-0.1.0/vipien-0.1.0.tgz
     version: 0.1.0
-generated: "2023-05-10T10:33:16.926821673Z"
+generated: "2023-05-10T10:46:39.288001011Z"
