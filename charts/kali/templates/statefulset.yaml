@@ -66,6 +66,10 @@ spec:
                 apt install -y kali-linux-core
                 apt install -y kali-desktop-xfce
                 apt install -y tightvncserver dbus dbus-x11 novnc net-tools
+
+                adduser --gecos "" --disabled-password rospo
+                echo "rospo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+                usermod -a -G sudo rospo
               EOT
               fi
 
@@ -93,23 +97,25 @@ spec:
               chroot /data /bin/bash <<"EOT"
                 rm -rf /tmp/*
                 rm -rf /tmp/.*
-                
+
                 export LANG=C.UTF-8
                 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-                export USER=root
+                export USER=rospo
                 export VNCDEPTH=16
                 export VNCPORT=3200
                 export VNCDISPLAY=$VNCDISPLAY
                 export VNCPWD=$VNCPWD
 
-                mkdir -p /root/.vnc/
-                echo $VNCPWD | vncpasswd -f > /root/.vnc/passwd
-                chmod 600 /root/.vnc/passwd
+                mkdir -p /home/rospo/.vnc/
+                echo $VNCPWD | vncpasswd -f > /home/rospo/.vnc/passwd
+                chmod 600 /home/rospo/.vnc/passwd
+                chown -R rospo:rospo /home/rospo/.vnc/
 
-                vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost
+                echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
+                runuser -l rospo -c "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
 
                 chmod 666 /dev/ptmx
-                rospo run /etc/rospo/rospo.yaml
+                runuser -l rospo -c "rospo run /etc/rospo/rospo.yaml"
               EOT
 
           ports:
