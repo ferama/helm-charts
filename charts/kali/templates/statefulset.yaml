@@ -102,7 +102,7 @@ spec:
                 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
                 export USER=rospo
                 export VNCDEPTH=16
-                export VNCPORT=3200
+                export VNCPORT=5900
                 export VNCDISPLAY=$VNCDISPLAY
                 export VNCPWD=$VNCPWD
 
@@ -113,6 +113,8 @@ spec:
 
                 echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
                 runuser -l rospo -c "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
+
+                runuser -l rospo -c "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900" &
 
                 chmod 666 /dev/ptmx
                 runuser -l rospo -c "rospo run /etc/rospo/rospo.yaml"
