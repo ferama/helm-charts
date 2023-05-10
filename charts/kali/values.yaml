@@ -1,0 +1,140 @@
+# Default values for rospo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: kalilinux/kali-rolling
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+rospoVersion: "v0.11.1"
+
+vncDisplay: "1280x800"
+vncPassword: "admin123"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# a volume will be mounted and the system will be persisted
+# A debootstrap system will be built into the volume and rospo will start inside the chroot
+chroot:
+  # storageClassName: ibmc-block-gold
+  size: 20Gi
+
+# authorizedKeys: |
+#   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDWXGI68rLy0YKyF2T611JifTrW+VogS+i/a5rItOJT8/yeAoWZMCRfR9CHYExV4IBmeXucymzYeHQCQZmeuUprsN8fL+muIdC0wrjXRtlBPUUEbzGV528+A44ZA7rypx5WvKpkLSHzhXHnK16rIU1QDCJMc6sSm5VIyRDw8t3k8mDfiyuAHSjG+7j0mKm3gbdJUB192U3nFX9bDzfOqXN7SmMqjezr0hASW8XYx7jI13eM7bkYT6GG3s7noWAltTyzaeyMjoLPWG4c7/x1INgNjrC+rmQwn995+B2BkwCDgULpwsyQBTyoFV0pkvR3ZaRIpqjZd/ZDYBMUlBOAitZwJ6eGbFiWlqS//cVF7s5b8VBNxePP8oxcE3qP3+cIWyHiT7tavupnI5QvD9HzPity4K39eAnmrkhmhfBiNQo63QS1n+2oJqF+7wOeS5YWivPATXW2h9XQ8QeAFY+kJRMog7YJ0N5FsoqVHTcd3Fm9UQcoCso6ocvDGroHUnkhjZsMiokL6Shw+oFYJ4Dpa2ZTfIWRdM7TLE0nnqKmk11vJwId3DgI3yNQ6vV5fB53l511S0+F3ZR2vsJse5WPFEUNL7lGOtz2aDzZN1Bz8Gi/mtvr0fyl7AZeq5w4JiSItGhYX3SlAyekn5YfnXvVlVyUDDWX4wFkXs9NEjZPT+Hz2w==
+#   ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDMcbRTjOXbMVdAaDevBlY7Fd0HU2kUbdx/pkk5aEpo+L0u7dMu3TXgLKtBrOwKttgu/C9HpolGBI8//kcKmatbMp5GksrIHaRJVMoRJlg+DNV2Y1Zem3edRDnAZKmwUWkYBjNoE9teGq/mDahXzlTm6fJp5868ZOH42aolJNM9FHdj5IiIFcuggS+tyFToGcWfTL7BKG0pryNIkaHzZx/ZVwvgbXDPrV0Zi03Y13928w0+tNryirMHpXudMich1RnkGDvsLIgSDPLk1cOKJkq1PK5k8Vt4GL1XRhqHolx/zDWNohEzT41tdwGWa6FrEi3n5cau7RSKFgE4/Zo283bl7yuZ2J1up/fV+L4EkIfJ39631+u8bNxenHPWIdi7B1vpHGw1FsoaYncyrVEK+Fw4VQKUcF1WOB9ZMDfMnuUykR4C8EmrPUFyq1UWEgnAW7kqqa5LB137nYCGA3k7hdQkn6kYTk2vPzaQWG+uO1LudnOiNSKEoYZXta17w+Rud+qDYuBcwbT8e5qnMneCDKcpe8Jmw+SKCeDYPumynL+KVlKL1cLOfzbb1dnF6/x0qqb++BxnJyoHmSY2ACNXP6VMStpbJX15dHPtKRzqw6lRiut9wW7L0Fnt42c3aadaozEam4NHHG+mYZ3TUBaxcRO8D/mC0kJAs18KbBL1IheWKw==
+
+authorizedKeys: ""
+
+# authorizedKeysURLS: 
+#   - https://github.com/ferama.keys
+authorizedKeysURLS: []
+
+authorizedPassword: ""
+
+# if true, the shell/exec sessions will be disabled
+disableShell: false
+
+# CHANGE ME before install
+serverKey: |
+  -----BEGIN RSA PRIVATE KEY-----
+  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
+  -----END RSA PRIVATE KEY-----
+
+
+extraVolumeMounts: {}
+# extraVolumeMounts: 
+#   - name: wordpress
+#     mountPath: /wordpress
+
+podAnnotations: {}
+podSecurityContext: {}
+  # fsGroup: 2000
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: NodePort
+  nodePort: 30222 # ignored if service type is not NodePort
+  loadBalancerIP: "" # ignored if service type is not LoadBalancer
+
+# maps tcp ports into the service
+# Example:
+#   mapPortRange:
+#    start: 3000
+#    end: 4000
+# To not make the range too big to prevent the "Request entity too large: limit is 3145728" error
+mapPortRange: {}
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  # If enabled, a super privileged cluster role will be attached too
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

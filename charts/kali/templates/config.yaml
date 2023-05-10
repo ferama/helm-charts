@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kali.fullname" . }}
+data:
+  rospo.yaml: |
+    sshd:
+      # this is the server_key mount point. Do not change
+      server_key: "/etc/rospo/server_key"
+
+      authorized_keys:
+        # do not remove this one
+        - /etc/rospo/authorized_keys
+        {{ range .Values.authorizedKeysURLS }}
+        - {{ . }}
+        {{ end }}
+      
+      {{ if .Values.authorizedPassword }}
+      authorized_password: {{ .Values.authorizedPassword  }}
+      {{ end }}
+
+      disable_shell: {{ .Values.disableShell  }}
+
+      # do not change me
+      listen_address: ":2222"

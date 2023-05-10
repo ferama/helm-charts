@@ -1,0 +1,178 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "kali.fullname" . }}
+  labels:
+    {{- include "kali.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "kali.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kali.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kali.selectorLabels" . | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 3
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "kali.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if .Values.securityContext }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- else }}
+          securityContext:
+            privileged: true
+            capabilities:
+              add: ["CAP_SYS_CHROOT"]
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: VNCDISPLAY
+              value: {{ .Values.vncDisplay | quote }}
+            - name: VNCPWD
+              value: {{ .Values.vncPassword | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/bash"]
+          args:
+            - -c
+            - |
+              set -e
+              if [ ! -f /data/chroot-ready ]; then
+                apt update
+                apt install -y schroot debootstrap curl
+                debootstrap kali-rolling /data
+
+                curl -s -L https://github.com/ferama/rospo/releases/download/{{.Values.rospoVersion}}/rospo-linux-amd64 -o /data/usr/local/bin/rospo
+                chmod +x /data/usr/local/bin/rospo
+                mkdir /data/etc/rospo
+
+              # do not change indention here or bash will complain
+              chroot /data /bin/bash <<"EOT"
+                export DEBIAN_FRONTEND=noninteractive
+                apt update
+                apt install -y kali-linux-core
+                apt install -y kali-desktop-xfce
+                apt install -y tightvncserver dbus dbus-x11 novnc net-tools
+              EOT
+              fi
+
+              cp -r /etc/rospo/* /data/etc/rospo
+              cp /etc/hosts /data/etc/hosts
+
+              mount proc /data/proc -t proc
+              mount sysfs /data/sys -t sysfs
+              mount -o bind /dev /data/dev/
+              mount -t devpts pts /data/dev/pts/
+              mount -o bind /dev/shm /data/dev/shm
+
+              {{- if .Values.serviceAccount.create }}
+              mkdir -p /data/run/secrets/kubernetes.io/serviceaccount
+              mount -o bind /run/secrets/kubernetes.io/serviceaccount /data/run/secrets/kubernetes.io/serviceaccount
+              {{- end }}
+
+              {{- range .Values.extraVolumeMounts }}
+                mkdir -p /data/{{ .mountPath }}
+                mount -o bind {{ .mountPath }} /data/{{ .mountPath }}
+              {{- end }}
+
+              touch /data/chroot-ready
+
+              chroot /data /bin/bash <<"EOT"
+                export LANG=C.UTF-8
+                export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+                export USER=root
+                export VNCDEPTH=16
+                export VNCPORT=3200
+                export VNCDISPLAY=$VNCDISPLAY
+                export VNCPWD=$VNCPWD
+
+                mkdir -p /root/.vnc/
+                echo $VNCPWD | vncpasswd -f > /root/.vnc/passwd
+                chmod 600 /root/.vnc/passwd
+
+                vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost
+
+                chmod 666 /dev/ptmx
+                rospo run /etc/rospo/rospo.yaml
+              EOT
+
+          ports:
+            - name: ssh
+              containerPort: 2222
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /data
+              name: {{ include "kali.fullname" . }}-chroot
+            {{- range .Values.extraVolumeMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+            {{- end }}
+            - name: {{ include "kali.fullname" . }}
+              mountPath: /etc/rospo/rospo.yaml
+              subPath: rospo.yaml
+            - name: {{ include "kali.fullname" . }}-secret
+              mountPath: /etc/rospo/server_key
+              subPath: server_key
+            - name: {{ include "kali.fullname" . }}-secret-auth
+              mountPath: /etc/rospo/authorized_keys
+              subPath: authorized_keys
+      volumes:
+        {{- range .Values.extraVolumeMounts }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}
+        {{- end }}
+        - name: {{ include "kali.fullname" . }}
+          configMap:
+            name: {{ include "kali.fullname" . }}
+        - name: {{ include "kali.fullname" . }}-secret
+          secret:
+            secretName: {{ include "kali.fullname" . }}
+        - name: {{ include "kali.fullname" . }}-secret-auth
+          secret:
+            secretName: {{ include "kali.fullname" . }}-auth
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: {{ include "kali.fullname" . }}-chroot
+      labels:
+        {{- include "kali.labels" . | nindent 8 }}
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      {{- if .Values.chroot.storageClassName }}
+      storageClassName: {{ .Values.chroot.storageClassName }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.chroot.size }}
