@@ -91,6 +91,9 @@ spec:
               touch /data/chroot-ready
 
               chroot /data /bin/bash <<"EOT"
+                rm -rf /tmp/*
+                rm -rf /tmp/.*
+                
                 export LANG=C.UTF-8
                 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
                 export USER=root
