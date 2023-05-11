@@ -111,10 +111,12 @@ spec:
                 chmod 600 /home/rospo/.vnc/passwd
                 chown -R rospo:rospo /home/rospo/.vnc/
 
-                echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
-                runuser -l rospo -c "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
+                if [ ! -f /home/rospo/.vnc/disable ]; then
+                  echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
+                  runuser -l rospo -c "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
 
-                runuser -l rospo -c "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900" &
+                  runuser -l rospo -c "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900" &
+                fi
 
                 chmod 666 /dev/ptmx
                 runuser -l rospo -c "rospo run /etc/rospo/rospo.yaml"
