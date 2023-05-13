@@ -44,12 +44,14 @@ spec:
               value: {{ .Values.vncDisplay | quote }}
             - name: VNCPWD
               value: {{ .Values.vncPassword | quote }}
+            - name: ENABLE_UI
+              value: {{ .Values.enableUI | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/bash"]
           args:
             - -c
             - |
-              set -e
+              set -ex
               if [ ! -f /data/chroot-ready ]; then
                 apt update
                 apt install -y schroot debootstrap curl
@@ -61,11 +63,17 @@ spec:
 
               # do not change indention here or bash will complain
               chroot /data /bin/bash <<"EOT"
+                set -x
+                echo "deb http://http.kali.org/kali kali-rolling main contrib non-free" > /etc/apt/sources.list
+
                 export DEBIAN_FRONTEND=noninteractive
                 apt update
                 apt install -y kali-linux-core
-                apt install -y kali-desktop-xfce
-                apt install -y tightvncserver dbus dbus-x11 novnc net-tools
+
+                if $ENABLE_UI; then
+                  apt install -y kali-desktop-xfce
+                  apt install -y tightvncserver dbus dbus-x11 novnc net-tools
+                fi
 
                 adduser --gecos "" --disabled-password rospo
                 echo "rospo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -95,6 +103,8 @@ spec:
               touch /data/chroot-ready
 
               chroot /data /bin/bash <<"EOT"
+                set -x
+
                 rm -rf /tmp/*
                 rm -rf /tmp/.*
 
@@ -106,16 +116,21 @@ spec:
                 export VNCDISPLAY=$VNCDISPLAY
                 export VNCPWD=$VNCPWD
 
-                mkdir -p /home/rospo/.vnc/
-                echo $VNCPWD | vncpasswd -f > /home/rospo/.vnc/passwd
-                chmod 600 /home/rospo/.vnc/passwd
-                chown -R rospo:rospo /home/rospo/.vnc/
 
-                if [ ! -f /home/rospo/.vnc/disable ]; then
+                if $ENABLE_UI; then
+                  mkdir -p /home/rospo/.vnc/
+                  echo $VNCPWD | vncpasswd -f > /home/rospo/.vnc/passwd
+                  chmod 600 /home/rospo/.vnc/passwd
+                  chown -R rospo:rospo /home/rospo/.vnc/
+
                   echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
                   runuser -l rospo -c "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
 
                   runuser -l rospo -c "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900" &
+                fi
+
+                if [ -x /home/rospo/init.sh ]; then
+                  runuser -l rospo /home/rospo/init.sh
                 fi
 
                 chmod 666 /dev/ptmx
