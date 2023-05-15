@@ -44,8 +44,6 @@ spec:
               value: {{ .Values.vncDisplay | quote }}
             - name: VNCPWD
               value: {{ .Values.vncPassword | quote }}
-            - name: ENABLE_UI
-              value: {{ .Values.enableUI | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/bash"]
           args:
@@ -70,10 +68,8 @@ spec:
                 apt update
                 apt install -y kali-linux-core
 
-                if $ENABLE_UI; then
-                  apt install -y kali-desktop-xfce
-                  apt install -y tightvncserver dbus dbus-x11 novnc net-tools
-                fi
+                apt install -y kali-desktop-xfce
+                apt install -y tightvncserver dbus dbus-x11 novnc net-tools
 
                 adduser --gecos "" --disabled-password rospo
                 echo "rospo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -117,16 +113,18 @@ spec:
                 export VNCPWD=$VNCPWD
 
 
-                if $ENABLE_UI; then
-                  mkdir -p /home/rospo/.vnc/
-                  echo $VNCPWD | vncpasswd -f > /home/rospo/.vnc/passwd
-                  chmod 600 /home/rospo/.vnc/passwd
-                  chown -R rospo:rospo /home/rospo/.vnc/
+                mkdir -p /home/rospo/.vnc/
+                echo $VNCPWD | vncpasswd -f > /home/rospo/.vnc/passwd
+                chmod 600 /home/rospo/.vnc/passwd
+                chown -R rospo:rospo /home/rospo/.vnc/
 
-                  echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
-                  runuser -l rospo -c "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost"
+                if [ ! -f /home/rospo/init.sh ]; then
+                  echo "#! /bin/bash" > /home/rospo/init.sh
+                  echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost" >> /home/rospo/init.sh
+                  echo "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900 &" >> /home/rospo/init.sh
 
-                  runuser -l rospo -c "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900" &
+                  chmod +x /home/rospo/init.sh
+                  chown rospo:rospo /home/rospo/init.sh
                 fi
 
                 if [ -x /home/rospo/init.sh ]; then
