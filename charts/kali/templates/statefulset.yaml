@@ -39,11 +39,6 @@ spec:
               add: ["CAP_SYS_CHROOT"]
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          env:
-            - name: VNCDISPLAY
-              value: {{ .Values.vncDisplay | quote }}
-            - name: VNCPWD
-              value: {{ .Values.vncPassword | quote }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/bash"]
           args:
@@ -69,9 +64,10 @@ spec:
                 apt install -y kali-linux-core
 
                 apt install -y kali-desktop-xfce
-                apt install -y tightvncserver dbus dbus-x11 novnc net-tools
+                apt install -y xrdp net-tools
 
                 adduser --gecos "" --disabled-password rospo
+                chpasswd <<<"rospo:{{.Values.authorizedPassword}}"
                 echo "rospo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
                 usermod -a -G sudo rospo
               EOT
@@ -107,21 +103,11 @@ spec:
                 export LANG=C.UTF-8
                 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
                 export USER=rospo
-                export VNCDEPTH=16
-                export VNCPORT=5900
-                export VNCDISPLAY=$VNCDISPLAY
-                export VNCPWD=$VNCPWD
 
-
-                mkdir -p /home/rospo/.vnc/
-                echo $VNCPWD | vncpasswd -f > /home/rospo/.vnc/passwd
-                chmod 600 /home/rospo/.vnc/passwd
-                chown -R rospo:rospo /home/rospo/.vnc/
 
                 if [ ! -f /home/rospo/init.sh ]; then
                   echo "#! /bin/bash" > /home/rospo/init.sh
-                  echo "vncserver :0 -rfbport $VNCPORT -geometry $VNCDISPLAY -depth $VNCDEPTH -localhost" >> /home/rospo/init.sh
-                  echo "/usr/share/novnc/utils/novnc_proxy --listen 8081 --vnc localhost:5900 &" >> /home/rospo/init.sh
+                  echo "sudo service xrdp start" >> /home/rospo/init.sh
 
                   chmod +x /home/rospo/init.sh
                   chown rospo:rospo /home/rospo/init.sh

@@ -12,12 +12,6 @@ image:
 
 rospoVersion: "v0.11.1"
 
-
-# use double resolution on retina display
-# vncDisplay: "2560x1600"
-vncDisplay: "1280x800"
-vncPassword: "admin123"
-
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
