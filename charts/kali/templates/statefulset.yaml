@@ -99,6 +99,7 @@ spec:
 
                 rm -rf /tmp/*
                 rm -rf /tmp/.*
+                rm /var/run/xrdp/xrdp-sesman.pid
 
                 export LANG=C.UTF-8
                 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -107,7 +108,7 @@ spec:
 
                 if [ ! -f /home/rospo/init.sh ]; then
                   echo "#! /bin/bash" > /home/rospo/init.sh
-                  echo "sudo service xrdp start" >> /home/rospo/init.sh
+                  echo "sudo service xrdp restart" >> /home/rospo/init.sh
 
                   chmod +x /home/rospo/init.sh
                   chown rospo:rospo /home/rospo/init.sh
