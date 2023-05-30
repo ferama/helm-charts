@@ -12,8 +12,9 @@ spec:
       {{- include "rospo.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
       annotations:
+        checksum/init.sh: {{ tpl .Values.initScript . | sha256sum }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
@@ -40,7 +41,7 @@ spec:
           {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.chroot.enabled }}
+          {{- if and .Values.chroot.enabled .Values.persistence.enabled }}
           command: ["/bin/sh"]
           args:
             - -c
@@ -83,6 +84,10 @@ spec:
 
               # rospo /etc/rospo/rospo.yaml
 
+              {{- if .Values.initScript }}
+              bash /usr/local/bin/init.sh
+              {{- end }}
+
               chroot /data /bin/bash <<"EOT"
                 chmod 666 /dev/ptmx
                 {{ if .Values.customUserId }}
@@ -100,9 +105,21 @@ spec:
             - |
               usermod -u {{ .Values.customUserId }} rospo
               cd /home/rospo
+
+              {{- if .Values.initScript }}
+              bash /usr/local/bin/init.sh
+              {{- end }}
+
               sudo -u rospo rospo run /etc/rospo/rospo.yaml
           {{- else }}
-          args: ["run", "/etc/rospo/rospo.yaml"]
+          command: ["/bin/sh"]
+          args:
+            - -c
+            - |
+              {{- if .Values.initScript }}
+              bash /usr/local/bin/init.sh
+              {{- end }}
+              rospo run /etc/rospo/rospo.yaml
           {{- end}}
           ports:
             - name: ssh
@@ -111,9 +128,9 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-            {{- if .Values.chroot.enabled }}
+            {{- if .Values.persistence.enabled }}
             - mountPath: /data
-              name: {{ include "rospo.fullname" . }}-chroot
+              name: {{ include "rospo.fullname" . }}-data
             {{- end }}
             {{- range .Values.extraVolumeMounts }}
             - name: {{ .name }}
@@ -129,7 +146,17 @@ spec:
             - name: {{ include "rospo.fullname" . }}-secret-auth
               mountPath: /etc/rospo/authorized_keys
               subPath: authorized_keys
+            {{- if .Values.initScript }}
+            - name: init-sh
+              mountPath: /usr/local/bin/init.sh
+              subPath: init.sh
+            {{- end }}
       volumes:
+        {{- if .Values.initScript }}
+        - name: init-sh
+          configMap:
+            name: {{ include "rospo.fullname" . }}-init
+        {{- end }}
         {{- range .Values.extraVolumeMounts }}
         - name: {{ .name }}
           persistentVolumeClaim:
@@ -157,21 +184,21 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 
-  {{- if .Values.chroot.enabled }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: {{ include "rospo.fullname" . }}-chroot
+      name: {{ include "rospo.fullname" . }}-data
       labels:
         {{- include "rospo.labels" . | nindent 8 }}
     spec:
       accessModes:
         - ReadWriteOnce
-      {{- if .Values.chroot.storageClassName }}
-      storageClassName: {{ .Values.chroot.storageClassName }}
+      {{- if .Values.persistence.storageClassName }}
+      storageClassName: {{ .Values.persistence.storageClassName }}
       {{- end }}
       resources:
         requests:
-          storage: {{ .Values.chroot.size }}
+          storage: {{ .Values.persistence.size }}
   {{- end }}

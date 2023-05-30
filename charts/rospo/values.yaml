@@ -16,9 +16,18 @@ fullnameOverride: ""
 
 customUserId: ""
 
+# Example:
+# initScript: |
+#   apt update
+#   apt install -y postgresql-client
+initScript: ""
+
 # if enabled, a volume will be mounted and the system will be persisted
 # A debootstrap system will be built into the volume and rospo will start inside the chroot
 chroot:
+  enabled: false
+
+persistence:
   enabled: false
   # storageClassName: ibmc-block-gold
   size: 10Gi

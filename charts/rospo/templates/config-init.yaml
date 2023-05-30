@@ -1,0 +1,9 @@
+{{- if .Values.initScript }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rospo.fullname" . }}-init
+data:
+  init.sh: |
+    {{- tpl .Values.initScript . | nindent 4 }}
+{{- end }}
