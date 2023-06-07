@@ -110,7 +110,7 @@ spec:
               bash /usr/local/bin/init.sh
               {{- end }}
 
-              sudo -u rospo rospo run /etc/rospo/rospo.yaml
+              runuser -l rospo -c 'rospo run /etc/rospo/rospo.yaml'
           {{- else }}
           command: ["/bin/sh"]
           args:
