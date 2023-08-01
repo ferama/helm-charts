@@ -63,6 +63,9 @@ spec:
               cp /usr/local/bin/rospo /data/usr/local/bin/rospo
               cp -r /etc/rospo/* /data/etc/rospo
               cp /etc/hosts /data/etc/hosts
+              {{- if .Values.initScript }}
+              cp /usr/local/bin/init.sh /data/usr/local/bin/init.sh
+              {{- end }}
 
               mount proc /data/proc -t proc
               mount sysfs /data/sys -t sysfs
@@ -84,10 +87,6 @@ spec:
 
               # rospo /etc/rospo/rospo.yaml
 
-              {{- if .Values.initScript }}
-              bash /usr/local/bin/init.sh
-              {{- end }}
-
               chroot /data /bin/bash <<"EOT"
                 chmod 666 /dev/ptmx
                 {{ if .Values.customUserId }}
@@ -95,6 +94,10 @@ spec:
                 {{ else }}
                 usermod -u 1000 rospo
                 {{ end }}
+
+                {{- if .Values.initScript }}
+                bash /usr/local/bin/init.sh
+                {{- end }}
                 runuser -l rospo -c 'rospo run /etc/rospo/rospo.yaml'
               EOT
 
